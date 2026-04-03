@@ -24,49 +24,37 @@ export function MenuPublic({ menu }: MenuPublicProps) {
       className="min-h-screen"
       style={{ backgroundColor: fondo, fontFamily }}
     >
-      {/* Hero — con portada como fondo si existe, sino color sólido */}
-      <header
-        className="relative overflow-hidden"
-        style={hasPortada ? undefined : { backgroundColor: primario }}
-      >
-        {/* Imagen de portada */}
-        {hasPortada && (
-          <>
-            <div className="relative w-full" style={{ aspectRatio: '3/1', minHeight: '160px' }}>
-              <Image
-                src={tenant.portada_url!}
-                alt={`Portada de ${tenant.nombre}`}
-                fill
-                sizes="100vw"
-                priority
-                className="object-cover"
-              />
-            </div>
-            {/* Gradiente sobre la portada para que el contenido sea legible */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 70%, ${fondo} 100%)`,
-              }}
-            />
-          </>
+      {/* Hero — altura fija, imagen o color como fondo, título siempre superpuesto */}
+      <header className="relative h-44 overflow-hidden sm:h-52">
+        {/* Fondo: portada o color sólido */}
+        {hasPortada ? (
+          <Image
+            src={tenant.portada_url!}
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0" style={{ backgroundColor: primario }} />
         )}
 
-        {/* Nombre y logo — superpuestos sobre la portada o sobre el color sólido */}
-        <div
-          className={[
-            'relative z-10 mx-auto max-w-2xl px-6 text-center',
-            hasPortada ? 'absolute bottom-0 left-0 right-0 pb-6' : 'py-10',
-          ].join(' ')}
-        >
+        {/* Gradiente inferior para que el texto sea legible sobre la portada */}
+        {hasPortada && (
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/65" />
+        )}
+
+        {/* Contenido centrado verticalmente en la parte inferior */}
+        <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center pb-5 text-center">
           {tenant.logo_url ? (
-            <div className="mx-auto mb-3 h-16 w-16 overflow-hidden rounded-full ring-4 ring-white/40">
+            <div className="mb-2 h-12 w-12 overflow-hidden rounded-full ring-2 ring-white/50">
               <div className="relative h-full w-full">
                 <Image
                   src={tenant.logo_url}
                   alt={`Logo de ${tenant.nombre}`}
                   fill
-                  sizes="64px"
+                  sizes="48px"
                   priority
                   className="object-cover"
                 />
@@ -74,30 +62,20 @@ export function MenuPublic({ menu }: MenuPublicProps) {
             </div>
           ) : (
             <div
-              className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold ring-4 ring-white/30"
-              style={
-                hasPortada
-                  ? { backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }
-                  : { backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }
-              }
+              className="mb-2 flex h-10 w-10 items-center justify-center rounded-full text-base font-bold ring-2 ring-white/40"
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#fff' }}
             >
               {tenant.nombre.charAt(0).toUpperCase()}
             </div>
           )}
 
-          <h1
-            className="text-3xl font-extrabold tracking-tight drop-shadow-sm"
-            style={{ color: '#fff' }}
-          >
+          <h1 className="text-2xl font-extrabold tracking-tight text-white drop-shadow">
             {tenant.nombre}
           </h1>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
+          <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
             Carta Digital
           </p>
         </div>
-
-        {/* Espaciado inferior cuando hay portada para que el contenido superpuesto no se corte */}
-        {hasPortada && <div className="h-20" />}
       </header>
 
       {/* Navegación de categorías — sticky, client component */}

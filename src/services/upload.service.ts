@@ -17,6 +17,24 @@ const MAGIC_BYTES: Record<string, Uint8Array> = {
   'image/webp': new Uint8Array([0x52, 0x49, 0x46, 0x46]),
 }
 
+const BUCKET = 'item-images'
+
+/**
+ * Crea el bucket de Storage si no existe.
+ * Lo marca como público para que las URLs sean accesibles sin auth.
+ */
+async function ensureBucket(supabase: ReturnType<typeof createAdminClient>): Promise<void> {
+  const { error } = await supabase.storage.createBucket(BUCKET, {
+    public: true,
+    allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    fileSizeLimit: MAX_IMAGE_SIZE_BYTES,
+  })
+  // Ignorar error si el bucket ya existe
+  if (error && !error.message.includes('already exists')) {
+    console.error('[ensureBucket] error:', error.message)
+  }
+}
+
 /**
  * Detecta el tipo MIME real de un buffer comparando magic bytes.
  */
@@ -82,22 +100,24 @@ export async function uploadImage(
   const storagePath = `${tenantId}/${fileName}`
 
   const supabase = createAdminClient()
+  await ensureBucket(supabase)
 
   const { error: uploadError } = await supabase.storage
-    .from('item-images')
+    .from(BUCKET)
     .upload(storagePath, processedBuffer, {
       contentType: 'image/webp',
       upsert: false,
     })
 
   if (uploadError) {
+    console.error('[uploadImage] supabase storage error:', uploadError.message)
     return {
       success: false,
-      error: { code: 'UPLOAD_ERROR', message: 'Error al subir la imagen' },
+      error: { code: 'UPLOAD_ERROR', message: `Error al subir la imagen: ${uploadError.message}` },
     }
   }
 
-  const { data: publicUrl } = supabase.storage.from('item-images').getPublicUrl(storagePath)
+  const { data: publicUrl } = supabase.storage.from(BUCKET).getPublicUrl(storagePath)
 
   return {
     success: true,
@@ -141,23 +161,25 @@ export async function uploadBanner(
 
   const storagePath = `${tenantId}/portada.webp`
   const supabase = createAdminClient()
+  await ensureBucket(supabase)
 
   const { error: uploadError } = await supabase.storage
-    .from('item-images')
+    .from(BUCKET)
     .upload(storagePath, processedBuffer, {
       contentType: 'image/webp',
       upsert: true,
     })
 
   if (uploadError) {
+    console.error('[uploadBanner] supabase storage error:', uploadError.message)
     return {
       success: false,
-      error: { code: 'UPLOAD_ERROR', message: 'Error al subir la portada' },
+      error: { code: 'UPLOAD_ERROR', message: `Error al subir la portada: ${uploadError.message}` },
     }
   }
 
   // Forzar cache-bust añadiendo timestamp al URL
-  const { data: publicUrl } = supabase.storage.from('item-images').getPublicUrl(storagePath)
+  const { data: publicUrl } = supabase.storage.from(BUCKET).getPublicUrl(storagePath)
   const url = `${publicUrl.publicUrl}?t=${Date.now()}`
 
   return { success: true, data: { url, path: storagePath } }
@@ -180,7 +202,7 @@ export async function deleteImage(
 
   const supabase = createAdminClient()
 
-  const { error } = await supabase.storage.from('item-images').remove([path])
+  const { error } = await supabase.storage.from(BUCKET).remove([path])
 
   if (error) {
     return {
