@@ -1,0 +1,54 @@
+/**
+ * Límites de uso según el plan del restaurante.
+ * Validados en src/services/ antes de cada operación.
+ */
+export const PLAN_LIMITS = {
+  free: {
+    maxItems: 10,
+    maxCategories: 3,
+    hasImages: false,
+    hasAnalytics: false,
+  },
+  basico: {
+    maxItems: 50,
+    maxCategories: 10,
+    hasImages: true,
+    hasAnalytics: false,
+  },
+  pro: {
+    maxItems: Infinity,
+    maxCategories: Infinity,
+    hasImages: true,
+    hasAnalytics: true,
+  },
+} as const
+
+/**
+ * Planes de suscripción con precios en CLP.
+ */
+export const PLANES = {
+  basico: {
+    precio: 9990,
+    label: 'Plan Básico',
+    mp_plan_id: process.env.MP_PLAN_BASICO_ID,
+  },
+  pro: {
+    precio: 19990,
+    label: 'Plan Pro',
+    mp_plan_id: process.env.MP_PLAN_PRO_ID,
+  },
+} as const
+
+export type PlanType = 'free' | 'basico' | 'pro'
+
+/** Tamaño máximo de imagen subida: 2MB */
+export const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024
+
+/** Tipos MIME de imagen permitidos */
+export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
+
+/** Dimensiones máximas al procesar con Sharp */
+export const IMAGE_MAX_DIMENSION = 800
+
+/** Calidad de compresión WebP */
+export const IMAGE_QUALITY = 80
