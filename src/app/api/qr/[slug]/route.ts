@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/config'
 import { getTenantById } from '@/services/tenant.service'
 import { generateQR } from '@/lib/qr/generator'
+import { logger } from '@/lib/logger'
 
 export async function GET(
   request: Request,
@@ -27,11 +28,18 @@ export async function GET(
   const url = new URL(request.url)
   const format = url.searchParams.get('format') === 'svg' ? 'svg' : 'png'
 
-  const qr = await generateQR(slug, format)
+  let qr: Buffer
+  try {
+    qr = await generateQR(slug, format) as Buffer
+  } catch (err) {
+    logger.error('qr generation failed', { slug, format, err: String(err) })
+    return NextResponse.json({ error: 'Error al generar el QR', code: 'INTERNAL_ERROR' }, { status: 500 })
+  }
 
+  logger.info('qr generated', { slug, format })
   const contentType = format === 'svg' ? 'image/svg+xml' : 'image/png'
 
-  return new NextResponse(qr as Buffer, {
+  return new NextResponse(new Uint8Array(qr), {
     headers: {
       'Content-Type': contentType,
       'Content-Disposition': `attachment; filename="qr-tucarta-${slug}.${format}"`,

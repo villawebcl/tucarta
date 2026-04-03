@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/config'
 import { uploadImage, uploadBanner } from '@/services/upload.service'
 import { getTenantById } from '@/services/tenant.service'
-import { PLAN_LIMITS } from '@/lib/constants'
+import { PLAN_LIMITS, getEffectivePlan } from '@/lib/constants'
 import { logger } from '@/lib/logger'
 
 export async function POST(request: Request) {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       if (!tenantResult.success) {
         return NextResponse.json({ error: 'Restaurante no encontrado', code: 'NOT_FOUND' }, { status: 404 })
       }
-      if (!PLAN_LIMITS[tenantResult.data.plan].hasImages) {
+      if (!PLAN_LIMITS[getEffectivePlan(tenantResult.data)].hasImages) {
         return NextResponse.json(
           { error: 'Tu plan no incluye subida de imágenes. Actualiza a Plan Básico o Pro.', code: 'PLAN_LIMIT_REACHED' },
           { status: 403 }

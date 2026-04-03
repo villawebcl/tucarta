@@ -12,6 +12,7 @@ export type Database = {
           portada_url: string | null
           colores: Json
           plan: 'free' | 'basico' | 'pro'
+          trial_ends_at: string | null
           activo: boolean
           created_at: string
           updated_at: string
@@ -24,6 +25,7 @@ export type Database = {
           portada_url?: string | null
           colores?: Json
           plan?: 'free' | 'basico' | 'pro'
+          trial_ends_at?: string | null
           activo?: boolean
           created_at?: string
           updated_at?: string
@@ -36,9 +38,11 @@ export type Database = {
           portada_url?: string | null
           colores?: Json
           plan?: 'free' | 'basico' | 'pro'
+          trial_ends_at?: string | null
           activo?: boolean
           updated_at?: string
         }
+        Relationships: []
       }
       users: {
         Row: {
@@ -63,6 +67,15 @@ export type Database = {
           password_hash?: string
           role?: 'owner' | 'staff'
         }
+        Relationships: [
+          {
+            foreignKeyName: 'users_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          }
+        ]
       }
       categories: {
         Row: {
@@ -86,6 +99,15 @@ export type Database = {
           orden?: number
           activo?: boolean
         }
+        Relationships: [
+          {
+            foreignKeyName: 'categories_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          }
+        ]
       }
       items: {
         Row: {
@@ -124,6 +146,22 @@ export type Database = {
           orden?: number
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'items_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'items_category_id_fkey'
+            columns: ['category_id']
+            isOneToOne: false
+            referencedRelation: 'categories'
+            referencedColumns: ['id']
+          }
+        ]
       }
       subscriptions: {
         Row: {
@@ -155,6 +193,15 @@ export type Database = {
           next_billing_date?: string | null
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'subscriptions_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          }
+        ]
       }
       qr_scans: {
         Row: {
@@ -175,10 +222,20 @@ export type Database = {
           user_agent?: string | null
           ip_hash?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: 'qr_scans_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          }
+        ]
       }
     }
     Views: Record<string, never>
     Functions: Record<string, never>
+    CompositeTypes: Record<string, never>
     Enums: {
       plan_type: 'free' | 'basico' | 'pro'
       user_role: 'owner' | 'staff'

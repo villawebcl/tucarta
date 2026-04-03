@@ -70,3 +70,26 @@ export const FUENTES = {
 } as const
 
 export type FuenteKey = keyof typeof FUENTES
+
+/**
+ * Devuelve el plan efectivo del tenant.
+ * Durante el período de prueba, todos los tenants tienen acceso Pro completo.
+ */
+export function getEffectivePlan(tenant: {
+  plan: PlanType
+  trial_ends_at: string | null
+}): PlanType {
+  if (tenant.trial_ends_at && new Date(tenant.trial_ends_at) > new Date()) {
+    return 'pro'
+  }
+  return tenant.plan
+}
+
+/**
+ * Días restantes de prueba. Devuelve 0 si el trial expiró o no existe.
+ */
+export function trialDaysLeft(trial_ends_at: string | null): number {
+  if (!trial_ends_at) return 0
+  const ms = new Date(trial_ends_at).getTime() - Date.now()
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)))
+}

@@ -29,7 +29,7 @@ export async function generateQR(
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://tucarta.cl'
   const url = `${appUrl}/menu/${slug}`
 
-  const qrOptions: QRCode.QRCodeOptions = {
+  const qrOptions: QRCode.QRCodeToBufferOptions & QRCode.QRCodeToStringOptions = {
     errorCorrectionLevel: 'H', // Alta corrección para permitir logo superpuesto
     margin: options.margin ?? 2,
     color: {

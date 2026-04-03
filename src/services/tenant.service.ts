@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import type { Result, AppError, Tenant } from '@/types'
 import type { RegisterInput, UpdateTenantInput } from '@/lib/validations/tenant.schema'
 import bcrypt from 'bcryptjs'
+import { logger } from '@/lib/logger'
 
 const BCRYPT_COST = 12
 
@@ -35,7 +36,7 @@ export async function createTenant(
     .single()
 
   if (tenantError || !tenant) {
-    console.error('[createTenant] insert error:', tenantError)
+    logger.error('create tenant failed', { slug: input.slug, err: tenantError?.message })
     return {
       success: false,
       error: { code: 'INTERNAL_ERROR', message: tenantError?.message ?? 'Error al crear el restaurante' },
