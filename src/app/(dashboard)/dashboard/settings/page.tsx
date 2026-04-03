@@ -1,6 +1,10 @@
+import type { Metadata } from 'next'
 import { auth } from '@/lib/auth/config'
 import { getTenantById } from '@/services/tenant.service'
+import { SettingsForm } from '@/components/dashboard/settings-form'
 import { Card } from '@/components/ui/card'
+
+export const metadata: Metadata = { title: 'Configuración' }
 
 export default async function SettingsPage() {
   const session = await auth()
@@ -11,26 +15,45 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Personaliza el aspecto de tu carta pública.
+        </p>
+      </div>
 
+      {/* Datos de solo lectura */}
       <Card>
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Tu restaurante</h2>
-        <dl className="space-y-3 text-sm">
-          <div className="flex gap-4">
-            <dt className="w-32 text-gray-500">Nombre:</dt>
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-400">
+          Tu restaurante
+        </h2>
+        <dl className="grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="text-gray-500">Nombre</dt>
             <dd className="font-medium text-gray-900">{tenant?.nombre}</dd>
           </div>
-          <div className="flex gap-4">
-            <dt className="w-32 text-gray-500">URL de tu carta:</dt>
-            <dd className="font-medium text-brand-500">
-              /menu/{tenant?.slug}
+          <div>
+            <dt className="text-gray-500">URL de tu carta</dt>
+            <dd className="font-medium text-brand-600">
+              <a
+                href={`/menu/${tenant?.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                /menu/{tenant?.slug}
+              </a>
             </dd>
           </div>
         </dl>
-        <p className="mt-4 text-xs text-gray-400">
-          Para cambiar el nombre o colores de tu carta, escríbenos a soporte@tucarta.cl
-        </p>
       </Card>
+
+      {/* Formulario de apariencia */}
+      {tenant ? (
+        <SettingsForm tenant={tenant} />
+      ) : (
+        <p className="text-sm text-gray-500">No se pudo cargar la configuración.</p>
+      )}
     </div>
   )
 }

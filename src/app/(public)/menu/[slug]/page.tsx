@@ -57,7 +57,7 @@ export default async function MenuPage({ params }: PageProps) {
     })
   })
 
-  const colores = tenant.colores as { primario?: string; fondo?: string } | null
+  const colores = tenant.colores as { primario?: string; fondo?: string; fuente?: string } | null
 
   return (
     <MenuPublic
@@ -67,9 +67,11 @@ export default async function MenuPage({ params }: PageProps) {
           slug: tenant.slug,
           nombre: tenant.nombre,
           logo_url: tenant.logo_url,
+          portada_url: tenant.portada_url ?? null,
           colores: {
             primario: colores?.primario ?? '#FF6B35',
             fondo: colores?.fondo ?? '#FFFFFF',
+            fuente: colores?.fuente,
           },
         },
         categories: menuResult.data,

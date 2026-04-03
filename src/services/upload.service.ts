@@ -5,6 +5,8 @@ import {
   ALLOWED_IMAGE_TYPES,
   IMAGE_MAX_DIMENSION,
   IMAGE_QUALITY,
+  BANNER_WIDTH,
+  BANNER_HEIGHT,
 } from '@/lib/constants'
 import type { Result, AppError } from '@/types'
 
@@ -101,6 +103,64 @@ export async function uploadImage(
     success: true,
     data: { url: publicUrl.publicUrl, path: storagePath },
   }
+}
+
+/**
+ * Sube la imagen de portada (banner 3:1) al Supabase Storage.
+ * Sobreescribe cualquier portada previa del tenant.
+ */
+export async function uploadBanner(
+  tenantId: string,
+  file: File
+): Promise<Result<{ url: string; path: string }, AppError>> {
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    return {
+      success: false,
+      error: { code: 'UPLOAD_ERROR', message: 'La imagen no puede superar 2MB' },
+    }
+  }
+
+  const arrayBuffer = await file.arrayBuffer()
+  const inputBuffer = Buffer.from(arrayBuffer)
+
+  const detectedMime = detectMimeType(inputBuffer)
+  if (!detectedMime || !ALLOWED_IMAGE_TYPES.includes(detectedMime as typeof ALLOWED_IMAGE_TYPES[number])) {
+    return {
+      success: false,
+      error: {
+        code: 'UPLOAD_ERROR',
+        message: 'Tipo de archivo no permitido. Solo se aceptan JPEG, PNG y WebP.',
+      },
+    }
+  }
+
+  const processedBuffer = await sharp(inputBuffer)
+    .resize(BANNER_WIDTH, BANNER_HEIGHT, { fit: 'cover' })
+    .webp({ quality: IMAGE_QUALITY })
+    .toBuffer()
+
+  const storagePath = `${tenantId}/portada.webp`
+  const supabase = createAdminClient()
+
+  const { error: uploadError } = await supabase.storage
+    .from('item-images')
+    .upload(storagePath, processedBuffer, {
+      contentType: 'image/webp',
+      upsert: true,
+    })
+
+  if (uploadError) {
+    return {
+      success: false,
+      error: { code: 'UPLOAD_ERROR', message: 'Error al subir la portada' },
+    }
+  }
+
+  // Forzar cache-bust añadiendo timestamp al URL
+  const { data: publicUrl } = supabase.storage.from('item-images').getPublicUrl(storagePath)
+  const url = `${publicUrl.publicUrl}?t=${Date.now()}`
+
+  return { success: true, data: { url, path: storagePath } }
 }
 
 /**

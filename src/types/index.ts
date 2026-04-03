@@ -31,9 +31,11 @@ export interface PublicMenu {
     slug: string
     nombre: string
     logo_url: string | null
+    portada_url: string | null
     colores: {
       primario: string
       fondo: string
+      fuente?: string
     }
   }
   categories: CategoryWithItems[]

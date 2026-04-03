@@ -31,10 +31,14 @@ export const updateTenantSchema = z.object({
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(100, 'El nombre no puede exceder 100 caracteres')
     .optional(),
+  portada_url: z.string().url('URL de portada inválida').nullable().optional(),
   colores: z
     .object({
       primario: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Color hexadecimal inválido'),
       fondo: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Color hexadecimal inválido'),
+      fuente: z
+        .enum(['inter', 'playfair', 'lato', 'poppins', 'merriweather'])
+        .optional(),
     })
     .optional(),
 })

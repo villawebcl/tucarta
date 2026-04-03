@@ -9,6 +9,7 @@ export type Database = {
           slug: string
           nombre: string
           logo_url: string | null
+          portada_url: string | null
           colores: Json
           plan: 'free' | 'basico' | 'pro'
           activo: boolean
@@ -20,6 +21,7 @@ export type Database = {
           slug: string
           nombre: string
           logo_url?: string | null
+          portada_url?: string | null
           colores?: Json
           plan?: 'free' | 'basico' | 'pro'
           activo?: boolean
@@ -31,6 +33,7 @@ export type Database = {
           slug?: string
           nombre?: string
           logo_url?: string | null
+          portada_url?: string | null
           colores?: Json
           plan?: 'free' | 'basico' | 'pro'
           activo?: boolean

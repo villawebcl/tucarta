@@ -52,3 +52,21 @@ export const IMAGE_MAX_DIMENSION = 800
 
 /** Calidad de compresión WebP */
 export const IMAGE_QUALITY = 80
+
+/** Dimensiones de imagen de portada banner (3:1 ratio) */
+export const BANNER_WIDTH = 1200
+export const BANNER_HEIGHT = 400
+
+/**
+ * Fuentes disponibles para personalizar la carta.
+ * `variable` es el nombre de la CSS custom property cargada en el root layout.
+ */
+export const FUENTES = {
+  inter: { nombre: 'Inter', descripcion: 'Moderna y limpia', variable: '--font-inter' },
+  playfair: { nombre: 'Playfair Display', descripcion: 'Elegante y clásica', variable: '--font-playfair' },
+  lato: { nombre: 'Lato', descripcion: 'Amigable y versátil', variable: '--font-lato' },
+  poppins: { nombre: 'Poppins', descripcion: 'Redonda y actual', variable: '--font-poppins' },
+  merriweather: { nombre: 'Merriweather', descripcion: 'Legible y clásica', variable: '--font-merriweather' },
+} as const
+
+export type FuenteKey = keyof typeof FUENTES
