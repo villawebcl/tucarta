@@ -13,7 +13,7 @@ export function CategorySection({ category, primario = '#FF6B35', layout = 'list
   return (
     <section aria-labelledby={`cat-title-${category.id}`}>
       {/* Scroll target con offset para la nav sticky */}
-      <div id={`category-${category.id}`} className="-mt-4 pt-4 scroll-mt-16 mb-5">
+      <div id={`category-${category.id}`} className="-mt-4 pt-4 scroll-mt-20 mb-5">
         <h2
           id={`cat-title-${category.id}`}
           className="text-2xl font-extrabold tracking-tight text-gray-900"

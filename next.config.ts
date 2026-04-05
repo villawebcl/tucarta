@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
     ],
   },
   async headers() {
@@ -44,7 +48,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "img-src 'self' data: https://*.supabase.co",
+              "img-src 'self' data: https://*.supabase.co https://picsum.photos https://fastly.picsum.photos",
               process.env.NODE_ENV === 'development'
                 ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
                 : "script-src 'self'",
