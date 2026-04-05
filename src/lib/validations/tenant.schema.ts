@@ -31,6 +31,11 @@ export const updateTenantSchema = z.object({
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(100, 'El nombre no puede exceder 100 caracteres')
     .optional(),
+  descripcion: z
+    .string()
+    .max(200, 'La descripción no puede exceder 200 caracteres')
+    .nullable()
+    .optional(),
   portada_url: z.string().url('URL de portada inválida').nullable().optional(),
   colores: z
     .object({
@@ -39,7 +44,16 @@ export const updateTenantSchema = z.object({
       fuente: z
         .enum(['inter', 'playfair', 'lato', 'poppins', 'merriweather'])
         .optional(),
+      layout: z.enum(['lista', 'grilla']).optional(),
     })
+    .optional(),
+  redes_sociales: z
+    .object({
+      instagram: z.string().max(50, 'Máximo 50 caracteres').optional(),
+      telefono: z.string().max(20, 'Máximo 20 caracteres').optional(),
+      direccion: z.string().max(150, 'Máximo 150 caracteres').optional(),
+    })
+    .nullable()
     .optional(),
 })
 

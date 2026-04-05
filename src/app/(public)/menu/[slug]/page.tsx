@@ -59,7 +59,8 @@ export default async function MenuPage({ params }: PageProps) {
     })
   })
 
-  const colores = tenant.colores as { primario?: string; fondo?: string; fuente?: string } | null
+  const colores = tenant.colores as { primario?: string; fondo?: string; fuente?: string; layout?: 'lista' | 'grilla' } | null
+  const redes = tenant.redes_sociales as { instagram?: string; telefono?: string; direccion?: string } | null
 
   return (
     <MenuPublic
@@ -68,12 +69,16 @@ export default async function MenuPage({ params }: PageProps) {
           id: tenant.id,
           slug: tenant.slug,
           nombre: tenant.nombre,
+          descripcion: tenant.descripcion ?? null,
           logo_url: tenant.logo_url,
           portada_url: tenant.portada_url ?? null,
+          whatsapp: tenant.whatsapp ?? null,
+          redes_sociales: redes,
           colores: {
             primario: colores?.primario ?? '#FF6B35',
             fondo: colores?.fondo ?? '#FFFFFF',
             fuente: colores?.fuente,
+            layout: colores?.layout,
           },
         },
         categories: menuResult.data,

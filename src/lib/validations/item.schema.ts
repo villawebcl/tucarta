@@ -18,6 +18,8 @@ export const createItemSchema = z.object({
   category_id: z.string().uuid('ID de categoría inválido'),
   activo: z.boolean().optional().default(true),
   orden: z.number().int().min(0).optional().default(0),
+  destacado: z.boolean().optional().default(false),
+  popular: z.boolean().optional().default(false),
 })
 
 export const updateItemSchema = createItemSchema.partial().omit({ category_id: true }).extend({

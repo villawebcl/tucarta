@@ -19,7 +19,17 @@ export interface CategoryWithItems {
     precio: number
     imagen_url: string | null
     orden: number
+    destacado: boolean
+    popular: boolean
   }>
+}
+
+export type LayoutCarta = 'lista' | 'grilla'
+
+export interface RedesSociales {
+  instagram?: string
+  telefono?: string
+  direccion?: string
 }
 
 /**
@@ -30,12 +40,16 @@ export interface PublicMenu {
     id: string
     slug: string
     nombre: string
+    descripcion: string | null
     logo_url: string | null
     portada_url: string | null
+    whatsapp: string | null
+    redes_sociales: RedesSociales | null
     colores: {
       primario: string
       fondo: string
       fuente?: string
+      layout?: LayoutCarta
     }
   }
   categories: CategoryWithItems[]

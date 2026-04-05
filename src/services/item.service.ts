@@ -129,7 +129,7 @@ export async function getPublicMenu(
 
   const { data: items, error: itemsError } = await supabase
     .from('items')
-    .select('id, category_id, nombre, descripcion, precio, imagen_url, orden')
+    .select('id, category_id, nombre, descripcion, precio, imagen_url, orden, destacado, popular')
     .eq('tenant_id', tenantId)
     .eq('activo', true)
     .in('category_id', categoryIds)
@@ -153,6 +153,8 @@ export async function getPublicMenu(
         precio: item.precio,
         imagen_url: item.imagen_url,
         orden: item.orden,
+        destacado: item.destacado,
+        popular: item.popular,
       })),
   }))
 

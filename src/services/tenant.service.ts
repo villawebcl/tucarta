@@ -129,9 +129,10 @@ export async function updateTenant(
     .single()
 
   if (error || !data) {
+    logger.error('update tenant failed', { tenantId, err: error?.message, details: error?.details })
     return {
       success: false,
-      error: { code: 'INTERNAL_ERROR', message: 'Error al actualizar el restaurante' },
+      error: { code: 'INTERNAL_ERROR', message: error?.message ?? 'Error al actualizar el restaurante' },
     }
   }
 

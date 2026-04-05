@@ -59,7 +59,21 @@ export default async function MenuManagePage() {
                 const category = categories.find((c) => c.id === item.category_id)
                 return (
                   <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{item.nombre}</td>
+                    <td className="px-6 py-4">
+                      <span className="font-medium text-gray-900">{item.nombre}</span>
+                      <span className="ml-2 inline-flex gap-1">
+                        {item.destacado && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+                            Recom.
+                          </span>
+                        )}
+                        {item.popular && (
+                          <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rose-700">
+                            Popular
+                          </span>
+                        )}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 text-gray-500">{category?.nombre ?? '—'}</td>
                     <td className="px-6 py-4 text-gray-900">{formatCLP(item.precio)}</td>
                     <td className="px-6 py-4">

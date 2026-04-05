@@ -86,8 +86,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         )}
 
-        <header className="border-b border-gray-200 bg-white px-8 py-4">
+        <header className="flex items-center justify-between border-b border-gray-200 bg-white px-8 py-4">
           <p className="text-sm text-gray-500">{session.user.email}</p>
+          {tenant?.slug && (
+            <a
+              href={`/menu/${tenant.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition hover:border-gray-300 hover:bg-gray-50"
+            >
+              Ver carta
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5 text-gray-400">
+                <path fillRule="evenodd" d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H5.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V6.56l-5.22 5.22a.75.75 0 0 1-1.06 0Z" clipRule="evenodd" />
+              </svg>
+            </a>
+          )}
         </header>
 
         <main className="flex-1 px-8 py-8">{children}</main>

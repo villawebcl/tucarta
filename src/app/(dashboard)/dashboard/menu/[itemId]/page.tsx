@@ -6,7 +6,7 @@ import { ItemForm } from '@/components/dashboard/item-form'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { PLAN_LIMITS } from '@/lib/constants'
+import { PLAN_LIMITS, getEffectivePlan } from '@/lib/constants'
 import type { PlanType } from '@/types'
 
 interface ItemData {
@@ -16,6 +16,8 @@ interface ItemData {
   category_id: string
   activo: boolean
   imagen_url: string | null
+  destacado: boolean
+  popular: boolean
 }
 
 export default function EditItemPage() {
@@ -27,6 +29,7 @@ export default function EditItemPage() {
   const [item, setItem] = useState<ItemData | null>(null)
   const [categories, setCategories] = useState<Array<{ id: string; nombre: string }>>([])
   const [plan, setPlan] = useState<PlanType>('free')
+  const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [saveError, setSaveError] = useState('')
@@ -39,7 +42,9 @@ export default function EditItemPage() {
       ])
 
       setCategories((catsRes as { data?: Array<{ id: string; nombre: string }> }).data ?? [])
-      setPlan(((tenantRes as { data?: { plan?: PlanType } }).data?.plan) ?? 'free')
+      const tenantData = (tenantRes as { data?: { plan?: PlanType; trial_ends_at?: string | null } }).data
+      setPlan(tenantData?.plan ?? 'free')
+      setTrialEndsAt(tenantData?.trial_ends_at ?? null)
 
       if (!isNew) {
         const itemRes = await fetch(`/api/items/${itemId}`).then((r) => r.json()) as { data?: {
@@ -49,6 +54,8 @@ export default function EditItemPage() {
           category_id: string
           activo: boolean
           imagen_url: string | null
+          destacado: boolean
+          popular: boolean
         }}
         if (itemRes?.data) {
           const d = itemRes.data
@@ -59,6 +66,8 @@ export default function EditItemPage() {
             category_id: d.category_id,
             activo: d.activo,
             imagen_url: d.imagen_url,
+            destacado: d.destacado ?? false,
+            popular: d.popular ?? false,
           })
         }
       }
@@ -120,7 +129,8 @@ export default function EditItemPage() {
         <ItemForm
           initialValues={item ?? undefined}
           categories={categories}
-          hasImages={PLAN_LIMITS[plan].hasImages}
+          hasImages={PLAN_LIMITS[getEffectivePlan({ plan, trial_ends_at: trialEndsAt })].hasImages}
+          hasUpselling={PLAN_LIMITS[getEffectivePlan({ plan, trial_ends_at: trialEndsAt })].hasUpselling}
           onSubmit={handleSubmit}
           submitLabel={isNew ? 'Agregar producto' : 'Guardar cambios'}
         />

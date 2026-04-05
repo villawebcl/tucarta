@@ -8,12 +8,15 @@ export type Database = {
           id: string
           slug: string
           nombre: string
+          descripcion: string | null
           logo_url: string | null
           portada_url: string | null
           colores: Json
+          redes_sociales: Json | null
           plan: 'free' | 'basico' | 'pro'
           trial_ends_at: string | null
           activo: boolean
+          whatsapp: string | null
           created_at: string
           updated_at: string
         }
@@ -21,12 +24,15 @@ export type Database = {
           id?: string
           slug: string
           nombre: string
+          descripcion?: string | null
           logo_url?: string | null
           portada_url?: string | null
           colores?: Json
+          redes_sociales?: Json | null
           plan?: 'free' | 'basico' | 'pro'
           trial_ends_at?: string | null
           activo?: boolean
+          whatsapp?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -34,12 +40,15 @@ export type Database = {
           id?: string
           slug?: string
           nombre?: string
+          descripcion?: string | null
           logo_url?: string | null
           portada_url?: string | null
           colores?: Json
+          redes_sociales?: Json | null
           plan?: 'free' | 'basico' | 'pro'
           trial_ends_at?: string | null
           activo?: boolean
+          whatsapp?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -120,6 +129,8 @@ export type Database = {
           imagen_url: string | null
           activo: boolean
           orden: number
+          destacado: boolean
+          popular: boolean
           created_at: string
           updated_at: string
         }
@@ -133,6 +144,8 @@ export type Database = {
           imagen_url?: string | null
           activo?: boolean
           orden?: number
+          destacado?: boolean
+          popular?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -144,6 +157,8 @@ export type Database = {
           imagen_url?: string | null
           activo?: boolean
           orden?: number
+          destacado?: boolean
+          popular?: boolean
           updated_at?: string
         }
         Relationships: [
