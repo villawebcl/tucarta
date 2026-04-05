@@ -11,6 +11,7 @@ export function CategoryNav({ categories, primario }: CategoryNavProps) {
   const [activeId, setActiveId] = useState<string>(categories[0]?.id ?? '')
   const navRef = useRef<HTMLUListElement>(null)
 
+  // Resalta la categoría visible usando IntersectionObserver
   useEffect(() => {
     if (categories.length === 0) return
 
@@ -33,23 +34,18 @@ export function CategoryNav({ categories, primario }: CategoryNavProps) {
     return () => observers.forEach((o) => o.disconnect())
   }, [categories])
 
-  // Scroll active pill into view inside the nav
+  // Centra la píldora activa dentro del nav horizontal
   useEffect(() => {
     const nav = navRef.current
     if (!nav) return
-    const active = nav.querySelector<HTMLButtonElement>('[data-active="true"]')
-    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    const active = nav.querySelector<HTMLElement>('[data-active="true"]')
+    active?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
   }, [activeId])
-
-  const scrollTo = (id: string) => {
-    document.getElementById(`category-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    setActiveId(id)
-  }
 
   return (
     <nav
       aria-label="Categorías del menú"
-      className="sticky top-0 z-20 border-b border-black/8 bg-white/95 backdrop-blur-md"
+      className="sticky top-0 z-20 border-b border-black/[0.08] bg-white/95 backdrop-blur-md"
     >
       <div
         className="mx-auto max-w-2xl overflow-x-auto px-4 [&::-webkit-scrollbar]:hidden"
@@ -60,10 +56,11 @@ export function CategoryNav({ categories, primario }: CategoryNavProps) {
             const isActive = cat.id === activeId
             return (
               <li key={cat.id} className="flex-shrink-0">
-                <button
+                <a
+                  href={`#category-${cat.id}`}
                   data-active={isActive}
-                  onClick={() => scrollTo(cat.id)}
-                  className="rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap"
+                  onClick={() => setActiveId(cat.id)}
+                  className="block rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap"
                   style={
                     isActive
                       ? { backgroundColor: primario, color: '#fff' }
@@ -71,7 +68,7 @@ export function CategoryNav({ categories, primario }: CategoryNavProps) {
                   }
                 >
                   {cat.nombre}
-                </button>
+                </a>
               </li>
             )
           })}

@@ -28,15 +28,24 @@ export default function LoginPage() {
         email,
         password,
         redirect: false,
+        callbackUrl,
       })
 
-      if (result?.error) {
+      if (!result || result.error || !result.ok) {
         // Mismo mensaje para email o contraseña incorrectos
         setError('Email o contraseña incorrectos')
         return
       }
 
-      router.push(callbackUrl)
+      if (result.url) {
+        window.location.href = result.url
+        return
+      }
+
+      router.replace(callbackUrl)
+      router.refresh()
+    } catch {
+      setError('No se pudo iniciar sesión. Intenta nuevamente.')
     } finally {
       setLoading(false)
     }

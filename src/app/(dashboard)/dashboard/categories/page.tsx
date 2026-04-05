@@ -18,6 +18,36 @@ interface CategoryFormValues {
   activo: boolean
 }
 
+const COMMON_CATEGORY_EXAMPLES = [
+  'Entradas',
+  'Para tomar',
+  'Bebidas',
+  'Platos principales',
+  'Platos de fondo',
+  'Promociones',
+  'Combos',
+  'Menú del día',
+  'Sandwiches',
+  'Hamburguesas',
+  'Pizzas',
+  'Pastas',
+  'Ensaladas',
+  'Sopas',
+  'Acompañamientos',
+  'Salsas',
+  'Jugos',
+  'Cafetería',
+  'Postres',
+]
+
+function normalizeCategoryName(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase()
+}
+
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -90,6 +120,21 @@ export default function CategoriesPage() {
     setDeleting(null)
     await load()
   }
+
+  const normalizedCurrentName = normalizeCategoryName(form.nombre)
+  const existingCategoryNames = new Set(
+    categories
+      .filter((cat) => !editing || cat.id !== editing.id)
+      .map((cat) => normalizeCategoryName(cat.nombre))
+  )
+  const suggestedCategories = COMMON_CATEGORY_EXAMPLES.filter((name) => {
+    const normalizedName = normalizeCategoryName(name)
+
+    if (existingCategoryNames.has(normalizedName)) return false
+    if (!normalizedCurrentName) return true
+
+    return normalizedName.includes(normalizedCurrentName)
+  }).slice(0, 8)
 
   return (
     <div className="space-y-6">
@@ -180,6 +225,34 @@ export default function CategoriesPage() {
             maxLength={80}
             autoFocus
           />
+
+          {!editing && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-medium text-gray-700">Ejemplos frecuentes</p>
+                <p className="text-xs text-gray-500">Haz clic para usar uno</p>
+              </div>
+
+              {suggestedCategories.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {suggestedCategories.map((name) => (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => setForm((v) => ({ ...v, nombre: name }))}
+                      className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-500">
+                  Ya usas las categorías más comunes o no hay coincidencias para lo que escribiste.
+                </p>
+              )}
+            </div>
+          )}
 
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input

@@ -13,15 +13,15 @@ export function QRPreview({ slug, qrDataUrl }: QRPreviewProps) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://tucarta.cl'
   const menuUrl = `${appUrl}/menu/${slug}`
 
-  async function downloadQR(format: 'png' | 'svg') {
+  async function downloadPNG() {
     setDownloading(true)
     try {
-      const response = await fetch(`/api/qr/${slug}?format=${format}`)
+      const response = await fetch(`/api/qr/${slug}?format=png`)
       const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `qr-tucarta-${slug}.${format}`
+      a.download = `qr-tucarta-${slug}.png`
       a.click()
       URL.revokeObjectURL(url)
     } finally {
@@ -48,24 +48,14 @@ export function QRPreview({ slug, qrDataUrl }: QRPreviewProps) {
         </a>
       </div>
 
-      <div className="flex gap-3">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => downloadQR('png')}
-          loading={downloading}
-        >
-          Descargar PNG
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => downloadQR('svg')}
-          loading={downloading}
-        >
-          Descargar SVG
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={downloadPNG}
+        loading={downloading}
+      >
+        Descargar PNG
+      </Button>
     </div>
   )
 }

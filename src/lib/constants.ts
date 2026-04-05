@@ -8,18 +8,21 @@ export const PLAN_LIMITS = {
     maxCategories: 3,
     hasImages: false,
     hasAnalytics: false,
+    hasUpselling: false,
   },
   basico: {
     maxItems: 50,
     maxCategories: 10,
     hasImages: true,
     hasAnalytics: false,
+    hasUpselling: false,
   },
   pro: {
     maxItems: Infinity,
     maxCategories: Infinity,
     hasImages: true,
     hasAnalytics: true,
+    hasUpselling: true,
   },
 } as const
 

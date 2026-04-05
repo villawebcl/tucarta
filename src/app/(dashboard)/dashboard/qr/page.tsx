@@ -25,7 +25,7 @@ export default async function QRPage() {
       <div className="rounded-xl bg-brand-50 p-4 text-sm text-brand-700">
         <p className="font-medium">Cómo usar tu QR:</p>
         <ol className="mt-2 list-decimal space-y-1 pl-4">
-          <li>Descarga el código QR en PNG o SVG</li>
+          <li>Descarga el código QR en PNG</li>
           <li>Imprímelo y ponlo en las mesas de tu local</li>
           <li>Los clientes lo escanean y ven tu carta en el celular</li>
         </ol>

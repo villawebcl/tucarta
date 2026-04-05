@@ -13,6 +13,8 @@ interface ItemFormValues {
   category_id: string
   activo: boolean
   imagen_url: string | null
+  destacado: boolean
+  popular: boolean
 }
 
 interface Category {
@@ -25,6 +27,8 @@ interface ItemFormProps {
   categories: Category[]
   /** Si el plan permite imágenes */
   hasImages?: boolean
+  /** Si el plan permite marcar destacado/popular */
+  hasUpselling?: boolean
   onSubmit: (values: ItemFormValues) => Promise<void>
   submitLabel?: string
 }
@@ -33,6 +37,7 @@ export function ItemForm({
   initialValues,
   categories,
   hasImages = false,
+  hasUpselling = false,
   onSubmit,
   submitLabel = 'Guardar',
 }: ItemFormProps) {
@@ -43,6 +48,8 @@ export function ItemForm({
     category_id: initialValues?.category_id ?? categories[0]?.id ?? '',
     activo: initialValues?.activo ?? true,
     imagen_url: initialValues?.imagen_url ?? null,
+    destacado: initialValues?.destacado ?? false,
+    popular: initialValues?.popular ?? false,
   })
   const [errors, setErrors] = useState<Partial<Record<keyof ItemFormValues, string>>>({})
   const [loading, setLoading] = useState(false)
@@ -243,6 +250,41 @@ export function ItemForm({
         />
         Disponible en la carta
       </label>
+
+      {/* Upselling flags — solo en Plan Pro */}
+      <div className="flex flex-col gap-1">
+        <span className="text-sm font-medium text-gray-700">Destacar producto</span>
+        {!hasUpselling ? (
+          <p className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500">
+            Marcar como recomendado o popular está disponible en el{' '}
+            <a href="/dashboard/billing" className="font-medium text-brand-500 hover:underline">
+              Plan Pro
+            </a>
+            .
+          </p>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={values.destacado}
+                onChange={(e) => setValues((v) => ({ ...v, destacado: e.target.checked }))}
+                className="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
+              />
+              Recomendado por la casa
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={values.popular}
+                onChange={(e) => setValues((v) => ({ ...v, popular: e.target.checked }))}
+                className="h-4 w-4 rounded border-gray-300 text-rose-500 focus:ring-rose-500"
+              />
+              El más pedido
+            </label>
+          </div>
+        )}
+      </div>
 
       <Button type="submit" loading={loading} disabled={uploadingImage} className="w-full">
         {submitLabel}

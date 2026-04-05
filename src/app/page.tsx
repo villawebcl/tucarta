@@ -6,6 +6,10 @@ export const metadata: Metadata = {
 }
 
 export default function HomePage() {
+  const whatsappHref =
+    process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP_URL ??
+    'https://wa.me/?text=Hola%2C%20necesito%20ayuda%20con%20TuCarta'
+
   return (
     <main className="min-h-screen bg-white">
       {/* Nav */}
@@ -108,6 +112,34 @@ export default function HomePage() {
                 </Link>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-16">
+        <div className="mx-auto max-w-5xl rounded-3xl border border-emerald-100 bg-gradient-to-r from-emerald-50 via-white to-brand-50 p-6 shadow-sm md:p-8">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
+                Ayuda rápida
+              </span>
+              <h2 className="mt-3 text-2xl font-bold text-gray-900">
+                Contáctanos por WhatsApp y nosotros te ayudamos
+              </h2>
+              <p className="mt-2 text-base text-gray-600">
+                Si prefieres apoyo para crear tu carta, cargar productos o dejar tu QR listo,
+                te acompañamos paso a paso.
+              </p>
+            </div>
+
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-2xl bg-emerald-500 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-emerald-600"
+            >
+              Hablar por WhatsApp
+            </a>
           </div>
         </div>
       </section>

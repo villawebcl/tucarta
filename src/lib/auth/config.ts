@@ -3,6 +3,8 @@ import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { createAdminClient } from '@/lib/supabase/server'
 import { loginSchema } from '@/lib/validations/tenant.schema'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
+import { logger } from '@/lib/logger'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -12,7 +14,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Contraseña', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
+        // 10 intentos por IP cada 15 minutos
+        const ip = getClientIp(request as Request)
+        if (!checkRateLimit(`login:${ip}`, 10, 15 * 60 * 1000)) {
+          logger.warn('login rate limited', { ip })
+          return null
+        }
+
         const parsed = loginSchema.safeParse(credentials)
         if (!parsed.success) return null
 
@@ -64,9 +73,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60, // 7 días
-  },
-  jwt: {
-    maxAge: 60 * 60, // 1 hora para el JWT de acceso
   },
   pages: {
     signIn: '/login',

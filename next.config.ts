@@ -1,4 +1,8 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { NextConfig } from 'next'
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url))
 
 const nextConfig: NextConfig = {
   images: {
@@ -8,6 +12,10 @@ const nextConfig: NextConfig = {
         hostname: '*.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
       },
     ],
   },
@@ -40,7 +48,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "img-src 'self' data: https://*.supabase.co",
+              "img-src 'self' data: https://*.supabase.co https://picsum.photos https://fastly.picsum.photos",
               process.env.NODE_ENV === 'development'
                 ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
                 : "script-src 'self'",
@@ -65,6 +73,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['@supabase/supabase-js'],
+  },
+  turbopack: {
+    root: projectRoot,
   },
 }
 

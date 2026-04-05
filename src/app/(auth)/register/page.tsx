@@ -53,15 +53,24 @@ export default function RegisterPage() {
         email: values.email,
         password: values.password,
         redirect: false,
+        callbackUrl: '/dashboard',
       })
 
-      if (result?.error) {
+      if (!result || result.error || !result.ok) {
         // La cuenta se creó pero el login falló — redirigir a login igual
         router.push('/login?registered=true')
         return
       }
 
-      router.push('/dashboard')
+      if (result.url) {
+        window.location.href = result.url
+        return
+      }
+
+      router.replace('/dashboard')
+      router.refresh()
+    } catch {
+      setError('No se pudo crear la cuenta. Intenta nuevamente.')
     } finally {
       setLoading(false)
     }
