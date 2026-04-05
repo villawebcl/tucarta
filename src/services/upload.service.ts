@@ -9,6 +9,7 @@ import {
   BANNER_HEIGHT,
 } from '@/lib/constants'
 import type { Result, AppError } from '@/types'
+import { logger } from '@/lib/logger'
 
 // Magic bytes para validar tipo MIME real (no confiar solo en la extensión)
 const MAGIC_BYTES: Record<string, Uint8Array> = {
@@ -31,7 +32,7 @@ async function ensureBucket(supabase: ReturnType<typeof createAdminClient>): Pro
   })
   // Ignorar error si el bucket ya existe
   if (error && !error.message.includes('already exists')) {
-    console.error('[ensureBucket] error:', error.message)
+    logger.error('ensureBucket failed', { error: error.message })
   }
 }
 
@@ -110,7 +111,7 @@ export async function uploadImage(
     })
 
   if (uploadError) {
-    console.error('[uploadImage] supabase storage error:', uploadError.message)
+    logger.error('uploadImage storage error', { tenantId, error: uploadError.message })
     return {
       success: false,
       error: { code: 'UPLOAD_ERROR', message: `Error al subir la imagen: ${uploadError.message}` },
@@ -171,7 +172,7 @@ export async function uploadBanner(
     })
 
   if (uploadError) {
-    console.error('[uploadBanner] supabase storage error:', uploadError.message)
+    logger.error('uploadBanner storage error', { tenantId, error: uploadError.message })
     return {
       success: false,
       error: { code: 'UPLOAD_ERROR', message: `Error al subir la portada: ${uploadError.message}` },
